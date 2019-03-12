@@ -1,6 +1,9 @@
-package com.donabate.staveley.alex.api.pojos;
+package com.donabate.staveley.alex.pojos.team;
 
-public class CreateTeamCommand {
+import javax.validation.constraints.NotNull;
+
+public class EditTeamCommand {
+	@NotNull
     private String name;
     private String country;
 
@@ -17,7 +20,7 @@ public class CreateTeamCommand {
     }
     
     public void setName(String name) {
-    	System.out.println (">>CreateTeamCommand.setName()");
+    	System.out.println (">>EditTeamCommand.setName()");
         this.name = name;
     }
 }

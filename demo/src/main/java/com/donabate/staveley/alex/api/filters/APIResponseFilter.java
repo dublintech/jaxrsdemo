@@ -12,7 +12,7 @@ import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.ext.Provider;
 
 @Provider
-public class GenericHeadersFilter implements ContainerResponseFilter {
+public class APIResponseFilter implements ContainerResponseFilter {
  
     @Override
     public void filter(ContainerRequestContext requestContext, 

@@ -1,4 +1,4 @@
-package com.donabate.staveley.alex.api.pojos;
+package com.donabate.staveley.alex.pojos;
 
 import java.util.List;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.donabate.staveley.alex.api.pojos;
+package com.donabate.staveley.alex.pojos;
 
 import java.net.URI;
 import java.util.Map;

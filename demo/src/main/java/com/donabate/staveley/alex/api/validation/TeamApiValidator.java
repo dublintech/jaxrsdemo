@@ -1,4 +1,4 @@
-package com.donabate.staveley.alex.api.service.validation;
+package com.donabate.staveley.alex.api.validation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,19 +9,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.donabate.staveley.alex.api.exceptions.APIException;
-import com.donabate.staveley.alex.api.pojos.APIError;
-import com.donabate.staveley.alex.api.pojos.CreateTeamCommand;
-import com.donabate.staveley.alex.api.pojos.ErrorResponse;
-import com.donabate.staveley.alex.api.service.TeamService;
+import com.donabate.staveley.alex.pojos.APIError;
+import com.donabate.staveley.alex.pojos.ErrorResponse;
+import com.donabate.staveley.alex.pojos.team.CreateTeamCommand;
+import com.donabate.staveley.alex.service.TeamService;
 
 /**
+ * This is the second error handling pattern.
+ * <UL>
+ * <LI> The first deals with validation annotations on the command.
+ * <LI> The second (this) contains some java functions applied on the the command
+ * <LI> The third is deeper business logic.
+ * </UL>
+ * 
  * Idea is that any part of the API is invalid then a 400 is returned.
  * A deeper validation problem should throw a 422.
  * 
  * @author astaveley
  */
 @Component("teamValidationService")
-public class TeamValidationService {
+public class TeamApiValidator {
 	
 	public void validate(CreateTeamCommand createTeamCommand) throws APIException {
 		System.out.println(">>validate(createTeamCommand.name=" + createTeamCommand.getName());

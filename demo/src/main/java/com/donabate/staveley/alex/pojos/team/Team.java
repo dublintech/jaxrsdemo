@@ -1,14 +1,24 @@
-package com.donabate.staveley.alex.api.pojos;
+package com.donabate.staveley.alex.pojos.team;
 
 import java.util.concurrent.ThreadLocalRandom;
 
+import javax.validation.constraints.NotNull;
+
+import com.donabate.staveley.alex.pojos.Extensible;
+import com.donabate.staveley.alex.pojos.Location;
+import com.donabate.staveley.alex.pojos.Resource;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.Map;
 import java.util.HashMap;
 
-@JsonIgnoreProperties(value = { "location" })
-public class Team implements Resource, Extensible {
+public class Team implements Resource, Extensible, Location {
+
+	@Override
+	public String toString() {
+		return "Team [name=" + name + ", id=" + id + ", location=" + location + "]";
+	}
+
 	private String name;
 	private String id;
 	private String location;
@@ -17,9 +27,6 @@ public class Team implements Resource, Extensible {
 		return name;
 	}
 	
-	public Team(String name) {
-		this.name = name;
-	}
 	
 	public String getResource() {
 		return "team";
@@ -42,6 +49,11 @@ public class Team implements Resource, Extensible {
 		location = "/teams/" + id;
 	}
 	
+	private Team(String teamId) {
+		id = teamId;
+		location = "/teams/" + id;
+	}
+	
 	public static class Builder  {
 		private String name;
 		
@@ -55,6 +67,13 @@ public class Team implements Resource, Extensible {
 			team.name = this.name;
 			return team;
 		}
+		
+		public Team build(String teamId) {
+			Team team =  new Team(teamId);
+			team.name = this.name;
+			return team;
+		}
 	}
+	
 	
 }

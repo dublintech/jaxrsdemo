@@ -1,6 +1,8 @@
-package com.donabate.staveley.alex.api.pojos;
+package com.donabate.staveley.alex.pojos.team;
 
 import javax.ws.rs.QueryParam;
+
+import com.donabate.staveley.alex.pojos.Query;
 
 public class TeamQuery implements Query {
 	

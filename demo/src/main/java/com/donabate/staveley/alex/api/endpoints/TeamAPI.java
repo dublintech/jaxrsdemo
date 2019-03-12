@@ -1,6 +1,7 @@
 package com.donabate.staveley.alex.api.endpoints;
 
 import javax.inject.Inject;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
@@ -15,12 +16,16 @@ import javax.ws.rs.core.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.donabate.staveley.alex.api.pojos.CreateTeamCommand;
-import com.donabate.staveley.alex.api.pojos.ResourceListWrapper;
-import com.donabate.staveley.alex.api.pojos.Team;
-import com.donabate.staveley.alex.api.pojos.TeamQuery;
-import com.donabate.staveley.alex.api.service.TeamService;
-import com.donabate.staveley.alex.api.service.validation.TeamValidationService;
+import com.donabate.staveley.alex.api.exceptions.APIException;
+import com.donabate.staveley.alex.api.validation.TeamApiValidator;
+import com.donabate.staveley.alex.pojos.DeleteCommand;
+import com.donabate.staveley.alex.pojos.ResourceListWrapper;
+import com.donabate.staveley.alex.pojos.team.CreateTeamCommand;
+import com.donabate.staveley.alex.pojos.team.EditTeamCommand;
+import com.donabate.staveley.alex.pojos.team.Team;
+import com.donabate.staveley.alex.pojos.team.TeamQuery;
+import com.donabate.staveley.alex.service.TeamService;
+import com.donabate.staveley.alex.service.validation.BusinessLogicException;
 
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
@@ -30,102 +35,119 @@ import java.util.List;
 /**
  * 
  * @author astaveley
- *
  */
 @Service
 @Path("/teams")
-public class TeamAPI {
+public class TeamApi {
 	
     @Autowired
     private TeamService teamService;
-    
-    // ToDo consider if it s better the API invoked this or if the teamService does. 
+
     @Autowired
-    private TeamValidationService teamValidationService;
+    private TeamApiValidator teamApiValidator;
     
+    /**
+     * On command line do:
+     * <pre>
+     * > curl localhost:8080/teams/123
+     * </pre>
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
-    public Response getSingle(@PathParam("username") String id) {
-    	System.out.println(">>getSingle()");
-    	Team team = teamService.find(id);
+    public Response getSingle(@PathParam("id") String id) {
+    	System.out.println(">>getSingle(), id=" + id);
+    	Team team = teamService.findTeam(id);
   
     	GenericEntity<Team> myEntity = 
     			new GenericEntity<Team>(team) {};
     	return Response.status(200).entity(myEntity).build();
     }
     
-    @Path("/queryparam")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response paramQuery(@QueryParam("name") String name) {
-    	System.out.println(">>paramQuery(), name=" + name);
-    	Response response = null;
-    	if (name == null) {
-    		response = getAll();
-    	} else {
-    		Team team = teamService.findByName(name);
-  
-    		GenericEntity<Team> myEntity = 
-    			new GenericEntity<Team>(team) {};
-    			response = Response.status(200).entity(myEntity).build();
-    	}
-    	return response;
-    }
     
+    /**
+     * On command line do:
+     * <pre>
+     * > curl localhost:8080/teams
+     * </pre>
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response typeQuery(@BeanParam TeamQuery teamQuery) {
-    	System.out.println(">>typeQuery(), teamQuery=" + teamQuery);
-    	Response response = null;
-    	String name =  teamQuery.getName();
-    	if (name == null) {
-    		response = getAll();
-    	} else {
-    		Team team = teamService.findByName(name);
-  
-    		GenericEntity<Team> myEntity = 
-    			new GenericEntity<Team>(team) {};
-    			response = Response.status(200).entity(myEntity).build();
-    	}
-    	return response;
+    public Response query(@BeanParam TeamQuery teamQuery) {
+    	System.out.println(">>query(), query=" + teamQuery);
+    	
+    	List<Team> teams = teamService.findTeams(teamQuery);
+    	ResourceListWrapper<Team> resourceListWrapper = new ResourceListWrapper<Team>(teams);
+    	GenericEntity<ResourceListWrapper<Team>> myEntity = 
+    			new GenericEntity<ResourceListWrapper<Team>>(resourceListWrapper) {};
+    	return Response.status(200).entity(myEntity).build();
     }
 
     
     /**
      * To test do:
      * <pre>
-     * curl -X POST -v -d "{"""name""":"""magoo"""}" localhost:8080/teams --header "Content-Type:application/json"
+     * > curl -X POST -v -d "{"""name""":"""magoo"""}" localhost:8080/teams --header "Content-Type:application/json"
+     * </pre>
+     * To simulate the first error handling pattern, bean validation, do:
+     * <pre>
+     *  curl -X POST -v -d "{"""name2""":"""magoo"""}" localhost:8080/teams --header "Content-Type:application/json
+     * </pre>
+     * To simulate the second error handling pattern, where the payload fails for a reason
+     * that the annotations can't validate, do:
+     * <pre>
+     * curl -X POST -v -d "{"""name""":"""422ex"""}" localhost:8080/teams --header "Content-Type:application/json"
      * </pre>
      * @param createTeamCommand
      * @return
-     */
-    
+     */   
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createTeam(CreateTeamCommand createTeamCommand) {
+    public Response createTeam(@Valid CreateTeamCommand createTeamCommand) {
     	System.out.println(">>createTeam(createTeamCommand=" + createTeamCommand + ")");
+    	teamApiValidator.validate(createTeamCommand);
+    	Team team = null;
+    	try {
+    		team = teamService.createTeam(createTeamCommand);
+    	}  catch (BusinessLogicException ble) {
+    		APIException.throwApiException(ble);
+    	}
+		GenericEntity<Team> myTeam = 
+				new GenericEntity<Team>(team) {};
+    	return Response.status(201).header("location", team.getLocation()).entity(myTeam).build();
     	
-    	teamValidationService.validate(createTeamCommand);
-    	
-    	Team team = teamService.createTeam(createTeamCommand);
-    	
+    }
+    
+    /*
+    * <pre>
+    * > curl -X POST -v localhost:8080/teams/123/remove --header "Content-Type:application/json"
+    * </pre>
+    */
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{id}/remove")
+    public Response deleteTeam(@PathParam("id") String id) {
+    	teamService.deleteTeam(id);
+       	return Response.status(204).build();
+    }
+    
+    /*
+    * <pre>
+    * > curl -X POST -v -d "{"""name""":"""magoo2"""}" localhost:8080/teams/123/edit --header "Content-Type:application/json"
+    * </pre>
+    */
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{id}/edit")
+    public Response editTeam(@PathParam("id") String id, @Valid EditTeamCommand editTeamCommand) {
+    	Team team = teamService.editTeam(id, editTeamCommand);
+    	System.out.println("editTeam(), team=" + team);
     	GenericEntity<Team> myTeam = 
     			new GenericEntity<Team>(team) {};
-    			
-    	return Response.status(201).header("location", team.getLocation()).entity(myTeam).build();
-
+    	return Response.status(200).header("location", team.getLocation()).entity(myTeam).build();
     }
     
-    
-    private Response getAll() {
-    	System.out.println(">>getList()");
-    	List<Team> teams = teamService.findAll();
-    	ResourceListWrapper<Team> resourceListWrapper = new ResourceListWrapper<Team>(teams);
-    	GenericEntity<ResourceListWrapper<Team>> myEntity = 
-    			new GenericEntity<ResourceListWrapper<Team>>(resourceListWrapper) {};
-    	return Response.status(200).entity(myEntity).build();
-    }
     
 }
