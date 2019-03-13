@@ -72,7 +72,7 @@ public class JerseyApi {
     	Jersey jersey = teamService.createJersey(teamId, createJerseyCommand);
     	GenericEntity<Jersey> myTeam = 
     			new GenericEntity<Jersey>(jersey) {};
-    	return Response.status(201).header("location", jersey.getLocation()).entity(myTeam).build();
+    	return Response.status(201).header("location", jersey.getSelf()).entity(myTeam).build();
     }
     
 

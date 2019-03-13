@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 import com.donabate.staveley.alex.api.exceptions.APIException;
 import com.donabate.staveley.alex.pojos.APIError;
 import com.donabate.staveley.alex.pojos.ErrorResponse;
+import com.donabate.staveley.alex.pojos.LinkCommand;
+import com.donabate.staveley.alex.pojos.UnlinkCommand;
 import com.donabate.staveley.alex.pojos.team.CreateTeamCommand;
 import com.donabate.staveley.alex.service.TeamService;
 
@@ -38,6 +40,42 @@ public class TeamApiValidator {
 		if (createTeamCommand.getName().equals("fail")) {
 			APIError apiError =  new APIError();
 			apiError.setTitle("Name cannot equal fail");
+			apiError.setCode("400");
+			apiErrors.add(apiError);
+		}
+		errorResponse.setAPIErrors(apiErrors);
+		
+		if (apiErrors.size() > 0) {
+			throw new APIException(errorResponse, Response.Status.BAD_REQUEST);
+		}
+	}
+	
+	public void validate(LinkCommand linkCommand) throws APIException {
+		System.out.println(">>validate(linkCommand=" + linkCommand);
+		ErrorResponse errorResponse = new ErrorResponse();
+		List<APIError> apiErrors = new ArrayList<>();
+		
+		if (!linkCommand.getRelName().equals("players")) {
+			APIError apiError =  new APIError();
+			apiError.setTitle("Can only change the player rel.");
+			apiError.setCode("400");
+			apiErrors.add(apiError);
+		}
+		errorResponse.setAPIErrors(apiErrors);
+		
+		if (apiErrors.size() > 0) {
+			throw new APIException(errorResponse, Response.Status.BAD_REQUEST);
+		}
+	}
+	
+	public void validate(UnlinkCommand unlinkCommand) throws APIException {
+		System.out.println(">>validate(linkCommand=" + unlinkCommand);
+		ErrorResponse errorResponse = new ErrorResponse();
+		List<APIError> apiErrors = new ArrayList<>();
+		
+		if (!unlinkCommand.getRelName().equals("players")) {
+			APIError apiError =  new APIError();
+			apiError.setTitle("Can only change the player rel.");
 			apiError.setCode("400");
 			apiErrors.add(apiError);
 		}

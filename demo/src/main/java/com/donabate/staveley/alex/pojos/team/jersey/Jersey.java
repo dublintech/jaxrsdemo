@@ -2,7 +2,7 @@ package com.donabate.staveley.alex.pojos.team.jersey;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-import com.donabate.staveley.alex.pojos.Location;
+import com.donabate.staveley.alex.pojos.SelfReferencing;
 import com.donabate.staveley.alex.pojos.Resource;
 import com.donabate.staveley.alex.pojos.team.Team;
 import com.donabate.staveley.alex.pojos.team.Team.Builder;
@@ -16,16 +16,16 @@ import com.donabate.staveley.alex.pojos.team.Team.Builder;
  * 
  * @author astaveley
  */
-public class Jersey implements Resource, Location {
+public class Jersey implements Resource, SelfReferencing {
 
 	private String colour;
 	private String type;
 	private String id;
-	private String location;
+	private String self;
 	
 	private Jersey (String teamId) {
 		id = String.valueOf(ThreadLocalRandom.current().nextInt(0, 1000 + 1));
-		location = "/teams/" + teamId + "/jerseys/" + id;
+		self = "/teams/" + teamId + "/jerseys/" + id;
 	}
 	
 	@Override
@@ -73,8 +73,8 @@ public class Jersey implements Resource, Location {
 	}
 
 	@Override
-	public String getLocation() {
+	public String getSelf() {
 		// TODO Auto-generated method stub
-		return location;
+		return self;
 	}
 }

@@ -1,6 +1,7 @@
 package com.donabate.staveley.alex.pojos.team;
 
 import javax.validation.constraints.NotNull;
+import javax.ws.rs.PathParam;
 
 public class EditTeamCommand {
 	@NotNull
@@ -23,4 +24,5 @@ public class EditTeamCommand {
     	System.out.println (">>EditTeamCommand.setName()");
         this.name = name;
     }
+    
 }

@@ -1,15 +1,22 @@
 package com.donabate.staveley.alex.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.donabate.staveley.alex.api.validation.TeamApiValidator;
 import com.donabate.staveley.alex.pojos.DeleteCommand;
+import com.donabate.staveley.alex.pojos.LinkCommand;
+import com.donabate.staveley.alex.pojos.UnlinkCommand;
+import com.donabate.staveley.alex.pojos.player.Player;
 import com.donabate.staveley.alex.pojos.team.CreateTeamCommand;
 import com.donabate.staveley.alex.pojos.team.EditTeamCommand;
+import com.donabate.staveley.alex.pojos.team.FanBase;
 import com.donabate.staveley.alex.pojos.team.Team;
 import com.donabate.staveley.alex.pojos.team.TeamQuery;
 import com.donabate.staveley.alex.pojos.team.jersey.CreateJerseyCommand;
@@ -27,25 +34,73 @@ public class TeamService {
 	
     @Autowired
     private TeamServiceValidator teamServiceValidator;
+    
+    @Autowired
+    private PlayerService playerService;
 	
-	public List<Team> findAllTeams() {
-		Team.Builder builderLiverpool = new Team.Builder();
-		builderLiverpool.withName("Liverpool");
-		
-		Team.Builder builderDublin = new Team.Builder();
-		builderDublin.withName("Dublin");
-		
+	public List<Team> findAllTeams() {		
 		List<Team> teams = 
-				Arrays.asList(builderLiverpool.build(), builderDublin.build());
+				Arrays.asList(makeLiverpool("222"), makeDublin("227"));
 		return teams;
 	}
 	
 	public Team findTeam(String teamId) {	
 		System.out.println(">>findTeam(teamId=" + teamId + ")");
-		Team.Builder builderDublin = new Team.Builder();
-		builderDublin.withName("Dublin");
+		return makeLiverpool(teamId);
+	}
+	
+	// utility method, to make Liverpool.
+	private Team makeLiverpool(String teamId) {
+		Team.Builder builderLiverpool = new Team.Builder();
+		builderLiverpool.withName("Liverpool");
+		Jersey.Builder builderJersey = new Jersey.Builder();
+		builderJersey.withColour("Red");
+		builderJersey.withType("Home");
+		builderLiverpool.withJerseys(Arrays.asList(builderJersey.build("100")));
+		builderLiverpool.withFanBase(new FanBase("YNWA", "Carlsberg"));
 		
-		return builderDublin.build(teamId);
+		Player.Builder builderPlayer = new Player.Builder();
+		builderPlayer.withName("Van Dijk");
+		
+		builderLiverpool.withPlayers(Arrays.asList(builderPlayer.build("3342")));
+		
+		return builderLiverpool.build(teamId);
+	}
+	
+	// utility method, to make Liverpool.
+	private Team makeDublin(String teamId) {
+		Team.Builder builderTeam = new Team.Builder();
+		builderTeam.withName("Dublin");
+		Jersey.Builder builderJersey = new Jersey.Builder();
+		builderJersey.withColour("Blue");
+		builderJersey.withType("Home");
+		builderTeam.withJerseys(Arrays.asList(builderJersey.build("177")));
+		builderTeam.withFanBase(new FanBase("COYBIB", "Guinness"));
+		
+		Player.Builder builderPlayer = new Player.Builder();
+		builderPlayer.withName("Jonny Cooper");
+		
+		builderTeam.withPlayers(Arrays.asList(builderPlayer.build("3377")));
+		
+		return builderTeam.build(teamId);
+	}
+	
+	// utility method, to make Liverpool.
+	private Team makeTeam(String teamId, String name) {
+		Team.Builder builderTeam = new Team.Builder();
+		builderTeam.withName(name);
+		Jersey.Builder builderJersey = new Jersey.Builder();
+		builderJersey.withColour("Black");
+		builderJersey.withType("Home");
+		builderTeam.withJerseys(Arrays.asList(builderJersey.build("777")));
+		builderTeam.withFanBase(new FanBase("Generic", "N/A"));
+		
+		Player.Builder builderPlayer = new Player.Builder();
+		builderPlayer.withName("Jonny Magoo");
+		
+		builderTeam.withPlayers(Arrays.asList(builderPlayer.build("000")));
+		
+		return builderTeam.build(teamId);
 	}
 	
 	public List<Team> findTeams(TeamQuery teamQuery) {
@@ -73,9 +128,7 @@ public class TeamService {
 	public Team editTeam(String id, EditTeamCommand editTeamCommand) {
 		// For now...
 		// make another just so we have a response
-		Team.Builder builder = new Team.Builder();
-		builder.withName(editTeamCommand.getName());
-		return builder.build(id);
+		return makeTeam(id, editTeamCommand.getName());
 	}
 	
 	public void deleteTeam(DeleteCommand deleteCommand) {
@@ -109,6 +162,48 @@ public class TeamService {
 		
 		return jerseyDublin.build(teamId);
 	}
+
+	public Team addPlayerToTeam(String id, @Valid LinkCommand linkCommand) {
+		// Get the Team
+		Team originalTeam = this.findTeam(id);
+		
+		// Now get the players to add. 
+		Player player = playerService.findPlayer(linkCommand.getId());
+		
+		Team.Builder builder = new Team.Builder();
+		builder.withName(originalTeam.getName());
+		builder.withFanBase(originalTeam.getFanBase());
+		
+		List<Player> newPlayers =  new ArrayList<>();
+		newPlayers.addAll(originalTeam.getPlayers());
+		newPlayers.add(player);
+		builder.withPlayers(newPlayers);
+		
+		Team team = builder.build(id);
+		
+		return team;
+	}
+	
+	public Team removePlayerFromTeam(String id, @Valid UnlinkCommand unlinkCommand) {
+		// Get the Team
+		Team originalTeam = this.findTeam(id);
+		
+		// Now get the players to add. 
+		Player player = playerService.findPlayer(unlinkCommand.getId());
+		
+		Team.Builder builder = new Team.Builder();
+		builder.withName(originalTeam.getName());
+		builder.withFanBase(originalTeam.getFanBase());
+		
+		// For now, just clear it out, it's only really to show Sample APIs.
+		List<Player> newPlayers = new ArrayList<>();
+		builder.withPlayers(newPlayers);
+		
+		Team team = builder.build(id);
+		
+		return team;
+	}
+	
 	
 	
 

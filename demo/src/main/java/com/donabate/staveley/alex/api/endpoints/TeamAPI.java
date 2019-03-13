@@ -18,8 +18,12 @@ import org.springframework.stereotype.Service;
 
 import com.donabate.staveley.alex.api.exceptions.APIException;
 import com.donabate.staveley.alex.api.validation.TeamApiValidator;
+import com.donabate.staveley.alex.pojos.APIError;
 import com.donabate.staveley.alex.pojos.DeleteCommand;
+import com.donabate.staveley.alex.pojos.ErrorResponse;
+import com.donabate.staveley.alex.pojos.LinkCommand;
 import com.donabate.staveley.alex.pojos.ResourceListWrapper;
+import com.donabate.staveley.alex.pojos.UnlinkCommand;
 import com.donabate.staveley.alex.pojos.team.CreateTeamCommand;
 import com.donabate.staveley.alex.pojos.team.EditTeamCommand;
 import com.donabate.staveley.alex.pojos.team.Team;
@@ -30,6 +34,8 @@ import com.donabate.staveley.alex.service.validation.BusinessLogicException;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -115,7 +121,7 @@ public class TeamApi {
     	}
 		GenericEntity<Team> myTeam = 
 				new GenericEntity<Team>(team) {};
-    	return Response.status(201).header("location", team.getLocation()).entity(myTeam).build();
+    	return Response.status(201).header("location", team.getSelf()).entity(myTeam).build();
     	
     }
     
@@ -146,7 +152,50 @@ public class TeamApi {
     	System.out.println("editTeam(), team=" + team);
     	GenericEntity<Team> myTeam = 
     			new GenericEntity<Team>(team) {};
-    	return Response.status(200).header("location", team.getLocation()).entity(myTeam).build();
+    	return Response.status(200).header("location", team.getSelf()).entity(myTeam).build();
+    }
+    
+    /*
+     * <pre>
+     * curl -X POST -v -d "{"""relName""":"""players""", """resource""":"""player""", """id""":"""27"""}" localhost:8080/teams/100/link --header "Content-Type:application/json"
+     * </pre>
+     */
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{id}/link")
+    public Response link(@PathParam("id") String id, @Valid LinkCommand linkCommand) {
+		System.out.println(">>link(), id=" + id + ",linkCommand=" + linkCommand);
+    	teamApiValidator.validate(linkCommand);
+    	// For now we are only linking players.
+ 
+		Team team = teamService.addPlayerToTeam(id, linkCommand);
+
+		GenericEntity<Team> myTeam = 
+			new GenericEntity<Team>(team) {};
+	
+		return Response.status(200).header("location", team.getSelf()).entity(myTeam).build();
+    }
+    
+    /*
+     * <pre>
+     * curl -X POST -v -d "{"""relName""":"""players""", """resource""":"""player""", """id""":"""27"""}" localhost:8080/teams/100/unlink --header "Content-Type:application/json"
+     * </pre>
+     */
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{id}/unlink")
+    public Response unlink(@PathParam("id") String id, @Valid UnlinkCommand unlinkCommand) {
+    	teamApiValidator.validate(unlinkCommand);
+    	// For now we are only linking players.
+ 
+		Team team = teamService.removePlayerFromTeam(id, unlinkCommand);
+		System.out.println("link(), team=" + team);
+		GenericEntity<Team> myTeam = 
+			new GenericEntity<Team>(team) {};
+	
+		return Response.status(200).header("location", team.getSelf()).entity(myTeam).build();
     }
     
     
