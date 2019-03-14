@@ -18,7 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.donabate.staveley.alex.api.validation.TeamApiValidator;
-import com.donabate.staveley.alex.pojos.ResourceListWrapper;
+import com.donabate.staveley.alex.pojos.resource.LinkHolder;
+import com.donabate.staveley.alex.pojos.resource.ResourceListWrapper;
 import com.donabate.staveley.alex.pojos.team.CreateTeamCommand;
 import com.donabate.staveley.alex.pojos.team.Team;
 import com.donabate.staveley.alex.pojos.team.TeamQuery;
@@ -72,7 +73,7 @@ public class JerseyApi {
     	Jersey jersey = teamService.createJersey(teamId, createJerseyCommand);
     	GenericEntity<Jersey> myTeam = 
     			new GenericEntity<Jersey>(jersey) {};
-    	return Response.status(201).header("location", jersey.getSelf()).entity(myTeam).build();
+    	return Response.status(201).header("location", jersey.getLinks().get(LinkHolder.SELF)).entity(myTeam).build();
     }
     
 

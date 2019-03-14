@@ -10,9 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.donabate.staveley.alex.api.validation.TeamApiValidator;
-import com.donabate.staveley.alex.pojos.DeleteCommand;
-import com.donabate.staveley.alex.pojos.LinkCommand;
-import com.donabate.staveley.alex.pojos.UnlinkCommand;
+import com.donabate.staveley.alex.pojos.command.DeleteCommand;
+import com.donabate.staveley.alex.pojos.command.LinkCommand;
+import com.donabate.staveley.alex.pojos.command.UnlinkCommand;
 import com.donabate.staveley.alex.pojos.player.Player;
 import com.donabate.staveley.alex.pojos.team.CreateTeamCommand;
 import com.donabate.staveley.alex.pojos.team.EditTeamCommand;

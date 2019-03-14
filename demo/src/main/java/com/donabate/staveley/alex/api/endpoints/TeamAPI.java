@@ -18,12 +18,13 @@ import org.springframework.stereotype.Service;
 
 import com.donabate.staveley.alex.api.exceptions.APIException;
 import com.donabate.staveley.alex.api.validation.TeamApiValidator;
-import com.donabate.staveley.alex.pojos.APIError;
-import com.donabate.staveley.alex.pojos.DeleteCommand;
-import com.donabate.staveley.alex.pojos.ErrorResponse;
-import com.donabate.staveley.alex.pojos.LinkCommand;
-import com.donabate.staveley.alex.pojos.ResourceListWrapper;
-import com.donabate.staveley.alex.pojos.UnlinkCommand;
+import com.donabate.staveley.alex.pojos.command.DeleteCommand;
+import com.donabate.staveley.alex.pojos.command.LinkCommand;
+import com.donabate.staveley.alex.pojos.command.UnlinkCommand;
+import com.donabate.staveley.alex.pojos.error.APIError;
+import com.donabate.staveley.alex.pojos.error.ErrorResponse;
+import com.donabate.staveley.alex.pojos.resource.LinkHolder;
+import com.donabate.staveley.alex.pojos.resource.ResourceListWrapper;
 import com.donabate.staveley.alex.pojos.team.CreateTeamCommand;
 import com.donabate.staveley.alex.pojos.team.EditTeamCommand;
 import com.donabate.staveley.alex.pojos.team.Team;
@@ -35,6 +36,8 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,7 +86,16 @@ public class TeamApi {
     	System.out.println(">>query(), query=" + teamQuery);
     	
     	List<Team> teams = teamService.findTeams(teamQuery);
-    	ResourceListWrapper<Team> resourceListWrapper = new ResourceListWrapper<Team>(teams);
+    	URL url = null;
+    	try {
+    		url = teamQuery.getUriInfo().getRequestUri().toURL();
+    	}  catch (MalformedURLException me) {
+    		// very unlikely to happen.
+    		// so swallow, for prototype
+    		me.printStackTrace();
+    	}
+    	
+    	ResourceListWrapper<Team> resourceListWrapper = new ResourceListWrapper<Team>(teams, url);
     	GenericEntity<ResourceListWrapper<Team>> myEntity = 
     			new GenericEntity<ResourceListWrapper<Team>>(resourceListWrapper) {};
     	return Response.status(200).entity(myEntity).build();
@@ -121,7 +133,7 @@ public class TeamApi {
     	}
 		GenericEntity<Team> myTeam = 
 				new GenericEntity<Team>(team) {};
-    	return Response.status(201).header("location", team.getSelf()).entity(myTeam).build();
+    	return Response.status(201).header("location", team.getLinks().get(LinkHolder.SELF)).entity(myTeam).build();
     	
     }
     
@@ -152,7 +164,7 @@ public class TeamApi {
     	System.out.println("editTeam(), team=" + team);
     	GenericEntity<Team> myTeam = 
     			new GenericEntity<Team>(team) {};
-    	return Response.status(200).header("location", team.getSelf()).entity(myTeam).build();
+    	return Response.status(200).header("location", team.getLinks().get(LinkHolder.SELF)).entity(myTeam).build();
     }
     
     /*
@@ -174,7 +186,7 @@ public class TeamApi {
 		GenericEntity<Team> myTeam = 
 			new GenericEntity<Team>(team) {};
 	
-		return Response.status(200).header("location", team.getSelf()).entity(myTeam).build();
+		return Response.status(200).header("location", team.getLinks().get(LinkHolder.SELF)).entity(myTeam).build();
     }
     
     /*
@@ -195,7 +207,7 @@ public class TeamApi {
 		GenericEntity<Team> myTeam = 
 			new GenericEntity<Team>(team) {};
 	
-		return Response.status(200).header("location", team.getSelf()).entity(myTeam).build();
+		return Response.status(200).header("location", team.getLinks().get(LinkHolder.SELF)).entity(myTeam).build();
     }
     
     

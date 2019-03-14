@@ -4,35 +4,37 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import javax.validation.constraints.NotNull;
 
-import com.donabate.staveley.alex.pojos.Extensible;
-import com.donabate.staveley.alex.pojos.SelfReferencing;
-import com.donabate.staveley.alex.pojos.Resource;
 import com.donabate.staveley.alex.pojos.player.Player;
+import com.donabate.staveley.alex.pojos.resource.Extensible;
+import com.donabate.staveley.alex.pojos.resource.LinkHolder;
+import com.donabate.staveley.alex.pojos.resource.PojoService;
+import com.donabate.staveley.alex.pojos.resource.Resource;
 import com.donabate.staveley.alex.pojos.team.jersey.Jersey;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.Map;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 
-public class Team implements Resource, Extensible, SelfReferencing {
+public class Team implements Resource, Extensible, LinkHolder {
 
 	@Override
 	public String toString() {
-		return "Team [name=" + name + ", id=" + id + ", self=" + self + "]";
+		return "Team [name=" + name + ", id=" + id + ", links=" + links + "]";
 	}
 
 	private String name;
 	private String id;
-	private String self;
 	private List<Player> players;
 	private FanBase fanBase;
 	private List<Jersey> jerseys;
 	
+	private Map<String, URL> links;
+
 	public String getName() {
 		return name;
 	}
-	
 	
 	public String getResource() {
 		return "team";
@@ -40,10 +42,6 @@ public class Team implements Resource, Extensible, SelfReferencing {
 	
 	public String getId() {
 		return id;
-	}
-	
-	public String getSelf() {
-		return self;
 	}
 	
 	public List<Player> getPlayers() {
@@ -64,12 +62,10 @@ public class Team implements Resource, Extensible, SelfReferencing {
 	
 	private Team() {
 		id = String.valueOf(ThreadLocalRandom.current().nextInt(0, 1000 + 1));
-		self = "/teams/" + id;
 	}
 	
 	private Team(String teamId) {
 		id = teamId;
-		self = "/teams/" + id;
 	}
 	
 	public static class Builder  {
@@ -104,8 +100,15 @@ public class Team implements Resource, Extensible, SelfReferencing {
 			team.players = this.players;
 			team.fanBase = this.fanBase;
 			team.jerseys = this.jerseys;
+			
+			URL teamSelfLink = PojoService.createUrl("/teams/" + team.getId());
+			Map<String, URL> links =  new HashMap<>();
+			links.put(SELF, teamSelfLink);
+			team.links = links;
+					
 			return team;
 		}
+		
 		
 		public Team build(String teamId) {
 			Team team =  new Team(teamId);
@@ -113,8 +116,20 @@ public class Team implements Resource, Extensible, SelfReferencing {
 			team.players = this.players;
 			team.fanBase = this.fanBase;
 			team.jerseys = this.jerseys;
+			
+			URL teamSelfLink = PojoService.createUrl("/teams/" + team.getId());
+			Map<String, URL> links =  new HashMap<>();
+			links.put(SELF, teamSelfLink);
+			team.links = links;
+			
 			return team;
 		}
+	}
+
+	@Override
+	public Map<String, URL> getLinks() {
+		// TODO Auto-generated method stub
+		return links;
 	}
 	
 	

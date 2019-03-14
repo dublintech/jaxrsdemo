@@ -1,4 +1,4 @@
-package com.donabate.staveley.alex.pojos;
+package com.donabate.staveley.alex.pojos.command;
 
 import javax.validation.constraints.NotNull;
 

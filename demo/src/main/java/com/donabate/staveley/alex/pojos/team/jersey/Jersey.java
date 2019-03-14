@@ -1,9 +1,13 @@
 package com.donabate.staveley.alex.pojos.team.jersey;
 
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
-import com.donabate.staveley.alex.pojos.SelfReferencing;
-import com.donabate.staveley.alex.pojos.Resource;
+import com.donabate.staveley.alex.pojos.resource.LinkHolder;
+import com.donabate.staveley.alex.pojos.resource.PojoService;
+import com.donabate.staveley.alex.pojos.resource.Resource;
 import com.donabate.staveley.alex.pojos.team.Team;
 import com.donabate.staveley.alex.pojos.team.Team.Builder;
 
@@ -16,16 +20,16 @@ import com.donabate.staveley.alex.pojos.team.Team.Builder;
  * 
  * @author astaveley
  */
-public class Jersey implements Resource, SelfReferencing {
+public class Jersey implements Resource, LinkHolder {
 
 	private String colour;
 	private String type;
 	private String id;
-	private String self;
+	
+	private Map<String, URL> links;
 	
 	private Jersey (String teamId) {
 		id = String.valueOf(ThreadLocalRandom.current().nextInt(0, 1000 + 1));
-		self = "/teams/" + teamId + "/jerseys/" + id;
 	}
 	
 	@Override
@@ -48,6 +52,12 @@ public class Jersey implements Resource, SelfReferencing {
 		return type;
 	}
 	
+	@Override
+	public Map<String, URL> getLinks() {
+		// TODO Auto-generated method stub
+		return links;
+	}
+	
 	public static class Builder  {
 		private String type;
 		private String colour;
@@ -67,14 +77,16 @@ public class Jersey implements Resource, SelfReferencing {
 			Jersey jersey =  new Jersey(teamId);
 			jersey.type = this.type;
 			jersey.colour = this.colour;
-
+			
+			URL playerSelfLink = PojoService.createUrl("/teams/" + teamId + 
+					"/jerseys/" + jersey.getId());
+			Map<String, URL> links =  new HashMap<>();
+			links.put(SELF, playerSelfLink);
+			jersey.links = links;
+			
 			return jersey;
 		}
 	}
 
-	@Override
-	public String getSelf() {
-		// TODO Auto-generated method stub
-		return self;
-	}
+	
 }

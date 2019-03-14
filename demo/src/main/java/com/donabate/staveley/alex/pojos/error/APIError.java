@@ -1,4 +1,4 @@
-package com.donabate.staveley.alex.pojos;
+package com.donabate.staveley.alex.pojos.error;
 
 import java.net.URI;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package com.donabate.staveley.alex.pojos;
+package com.donabate.staveley.alex.pojos.command;
 
 public class UnlinkCommand {
 	@Override

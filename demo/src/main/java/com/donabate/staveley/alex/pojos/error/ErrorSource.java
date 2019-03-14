@@ -1,4 +1,4 @@
-package com.donabate.staveley.alex.pojos;
+package com.donabate.staveley.alex.pojos.error;
 
 public class ErrorSource {
 	private String pointer;

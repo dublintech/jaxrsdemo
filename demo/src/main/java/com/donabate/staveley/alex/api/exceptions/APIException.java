@@ -7,8 +7,8 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.donabate.staveley.alex.pojos.APIError;
-import com.donabate.staveley.alex.pojos.ErrorResponse;
+import com.donabate.staveley.alex.pojos.error.APIError;
+import com.donabate.staveley.alex.pojos.error.ErrorResponse;
 import com.donabate.staveley.alex.service.validation.BusinessLogicException;
 
 public class APIException extends WebApplicationException  {

@@ -11,8 +11,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import com.donabate.staveley.alex.pojos.APIError;
-import com.donabate.staveley.alex.pojos.ErrorResponse;
+import com.donabate.staveley.alex.pojos.error.APIError;
+import com.donabate.staveley.alex.pojos.error.ErrorResponse;
 
 import javax.validation.ConstraintViolationException;
 
