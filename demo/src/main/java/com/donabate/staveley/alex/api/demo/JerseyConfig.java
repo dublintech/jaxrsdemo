@@ -2,6 +2,7 @@ package com.donabate.staveley.alex.api.demo;
 
 import com.donabate.staveley.alex.api.endpoints.TeamApi;
 import com.donabate.staveley.alex.api.endpoints.JerseyApi;
+import com.donabate.staveley.alex.api.endpoints.PlayerApi;
 import com.donabate.staveley.alex.api.exceptions.ApiConstraintExceptionHandler;
 import com.donabate.staveley.alex.api.filters.APIRequestFilter;
 import com.donabate.staveley.alex.api.filters.APIResponseFilter;
@@ -24,6 +25,7 @@ public class JerseyConfig extends ResourceConfig {
     	System.out.println(">>registerEndpoints()");
         register(TeamApi.class);
         register(JerseyApi.class);
+        register(PlayerApi.class);
     }
     
     private void registerExceptionHandler() {

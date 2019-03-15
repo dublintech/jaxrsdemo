@@ -17,12 +17,21 @@ import com.donabate.staveley.alex.pojos.team.jersey.Jersey;
 public class Player implements Resource, Extensible, LinkHolder {
 	@Override
 	public String toString() {
-		return "Player [name=" + name + ", id=" + id + ", links=" + links + "]";
+		return "Player [name=" + name + ", id=" + id + ",age=" + age + ", links=" + links + "]";
 	}
 
 	private String name;
 	private String id;
+	private int age;
 	
+	public int getAge() {
+		return age;
+	}
+
+	public void setAge(int age) {
+		this.age = age;
+	}
+
 	private Map<String, URL> links;
 	
 	public Map<String, Object> getExtensions() {
