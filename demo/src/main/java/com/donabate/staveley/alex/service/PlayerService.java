@@ -2,8 +2,12 @@ package com.donabate.staveley.alex.service;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.PostConstruct;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.stereotype.Component;
@@ -17,16 +21,43 @@ import com.donabate.staveley.alex.pojos.command.EditCommand;
 @Component("playerService")
 public final class PlayerService {
 	
-	public List<Player> findAllPlayers(PlayerQuery playerQuery) {
+	private List<Player> playersInDB = null;
+	
+	
+	public PlayerQueryResponse findAllPlayers(PlayerQuery playerQuery) {
+		Integer pageSize =  playerQuery.getPageSize();
+		Integer pageStartIndex = playerQuery.getPageStartIndex();
+	
+		// If pageSize is then full player set return lot
+		List<Player> playersToReturn = null;
+		this.sortPlayers(playersInDB, playerQuery.getSort());
+		if (pageSize == null || pageSize > playersInDB.size()) {
+			playersToReturn = playersInDB;
+		} else  {
+			playersToReturn = playersInDB.subList(pageStartIndex, pageStartIndex + pageSize);
+		}
+		
+		return new PlayerQueryResponse (playersToReturn, playersInDB.size());
+	}
+	
+	@PostConstruct
+	private void initPlayers() {
 		Player.Builder builderEuan = new Player.Builder();
 		builderEuan.withName("Euan Staveley");
 		
 		Player.Builder builderOliver = new Player.Builder();
 		builderOliver.withName("Oliver Staveley");
 		
-		List<Player> players = 
-				Arrays.asList(builderOliver.build(), builderOliver.build());
-		return players;
+		Player.Builder vanDijkBuilder = new Player.Builder();
+		vanDijkBuilder.withName("Van Dijk");
+		
+		Player.Builder gomezBuilder = new Player.Builder();
+		gomezBuilder.withName("Gomez");
+		
+		playersInDB = 
+				Arrays.asList(builderEuan.build(), builderOliver.build(),
+						vanDijkBuilder.build(),
+						gomezBuilder.build());
 	}
 	
 	public Player findPlayer(String playerId) {	
@@ -69,6 +100,39 @@ public final class PlayerService {
 		}
            	
 		return player;
+	}
+	
+	/**
+	 * For now we just sort on one field. Can be ascending or descending.
+	 * @param players
+	 * @param sortField
+	 */
+	private void sortPlayers(List<Player> players, String sortField) {
+		System.out.println("sortPlayers=(players=" + players + ",sortField=" + sortField);
+		if (sortField != null && !sortField.equals("")) {
+			Comparator<Player> comp = new Comparator<Player>(){
+				@Override
+				public int compare(Player p1, Player p2) {
+					// Descending if it begins with a -
+					boolean desc  = sortField.startsWith("-");
+					String fieldToUse = desc ? sortField.substring(1): sortField; 
+
+					try {
+						String field1 = BeanUtils.getProperty(p1, fieldToUse);
+						String field2 = BeanUtils.getProperty(p2, fieldToUse);
+						return (desc) ? field2.compareTo(field1) : field1.compareTo(field2);
+					} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+						// TODO Auto-generated catch block
+						// Again just for test purposes.  Since we are in the service layer 
+						// and beyond the API.  We will throw a Business Logic Exception.
+						throw new BusinessLogicException(e.getMessage());
+					}
+				}
+				
+			};
+		
+			Collections.sort(players, comp);
+		}
 	}
 
 }

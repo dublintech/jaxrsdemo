@@ -13,6 +13,7 @@ import com.donabate.staveley.alex.pojos.command.LinkCommand;
 import com.donabate.staveley.alex.pojos.command.UnlinkCommand;
 import com.donabate.staveley.alex.pojos.error.APIError;
 import com.donabate.staveley.alex.pojos.error.ErrorResponse;
+import com.donabate.staveley.alex.pojos.player.PlayerQuery;
 import com.donabate.staveley.alex.pojos.team.CreateTeamCommand;
 import com.donabate.staveley.alex.service.TeamService;
 
@@ -50,6 +51,7 @@ public class TeamApiValidator {
 		}
 	}
 	
+
 	public void validate(LinkCommand linkCommand) throws APIException {
 		System.out.println(">>validate(linkCommand=" + linkCommand);
 		ErrorResponse errorResponse = new ErrorResponse();

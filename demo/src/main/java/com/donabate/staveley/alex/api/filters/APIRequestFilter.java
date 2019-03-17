@@ -13,6 +13,8 @@ public class APIRequestFilter implements ContainerRequestFilter {
 	public void filter(ContainerRequestContext requestContext)
 		     throws IOException {
 		System.out.println(">>filter(), path=" + requestContext.getUriInfo().getPath());
+		System.out.println(">>filter(), uriPath=" + requestContext.getUriInfo().getRequestUri());
+		System.out.println(">>filter(), " + requestContext.getUriInfo().getQueryParameters());
 		String correlationId = requestContext.getHeaderString("X-Correlation-ID");
 		
 		// ToDo add correlationId to log4j

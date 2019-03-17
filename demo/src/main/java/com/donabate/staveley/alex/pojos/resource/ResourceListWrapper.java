@@ -24,4 +24,11 @@ public class ResourceListWrapper<T extends Resource> implements LinkHolder {
 		// TODO Auto-generated method stub
 		return links;
 	}
+	
+	public void addPagination(PaginationLinks paginationLinks) {
+		links.put("first", paginationLinks.getFirst());
+		links.put("last", paginationLinks.getLast());
+		links.put("prev", paginationLinks.getPrev());
+		links.put("next", paginationLinks.getNext());
+	}
 }

@@ -21,6 +21,10 @@ public class Player implements Resource, Extensible, LinkHolder {
 	}
 
 	private String name;
+	public String getName() {
+		return name;
+	}
+
 	private String id;
 	private int age;
 	
