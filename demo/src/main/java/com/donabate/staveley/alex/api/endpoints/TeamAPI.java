@@ -13,6 +13,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,6 +51,8 @@ import java.util.List;
 @Path("/teams")
 public class TeamApi {
 	
+	private static final Logger LOG = LoggerFactory.getLogger(TeamApi.class);
+	
     @Autowired
     private TeamService teamService;
 
@@ -65,7 +69,7 @@ public class TeamApi {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
     public Response getSingle(@PathParam("id") String id) {
-    	System.out.println(">>getSingle(), id=" + id);
+    	LOG.info(">>getSingle(), id=" + id);
     	Team team = teamService.findTeam(id);
   
     	GenericEntity<Team> myEntity = 
@@ -83,7 +87,7 @@ public class TeamApi {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response query(@BeanParam TeamQuery teamQuery) {
-    	System.out.println(">>query(), query=" + teamQuery);
+    	LOG.info(">>query(), query=" + teamQuery);
     	
     	List<Team> teams = teamService.findTeams(teamQuery);
     	URL url = null;
@@ -123,7 +127,7 @@ public class TeamApi {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createTeam(@Valid CreateTeamCommand createTeamCommand) {
-    	System.out.println(">>createTeam(createTeamCommand=" + createTeamCommand + ")");
+    	LOG.info(">>createTeam(createTeamCommand=" + createTeamCommand + ")");
     	teamApiValidator.validate(createTeamCommand);
     	Team team = null;
     	try {
@@ -161,7 +165,7 @@ public class TeamApi {
     @Path("/{id}/edit")
     public Response editTeam(@PathParam("id") String id, @Valid EditTeamCommand editTeamCommand) {
     	Team team = teamService.editTeam(id, editTeamCommand);
-    	System.out.println("editTeam(), team=" + team);
+    	LOG.info("editTeam(), team=" + team);
     	GenericEntity<Team> myTeam = 
     			new GenericEntity<Team>(team) {};
     	return Response.status(200).header("location", team.getLinks().get(LinkHolder.SELF)).entity(myTeam).build();
@@ -177,7 +181,7 @@ public class TeamApi {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}/link")
     public Response link(@PathParam("id") String id, @Valid LinkCommand linkCommand) {
-		System.out.println(">>link(), id=" + id + ",linkCommand=" + linkCommand);
+		LOG.info(">>link(), id=" + id + ",linkCommand=" + linkCommand);
     	teamApiValidator.validate(linkCommand);
     	// For now we are only linking players.
  
@@ -203,7 +207,6 @@ public class TeamApi {
     	// For now we are only linking players.
  
 		Team team = teamService.removePlayerFromTeam(id, unlinkCommand);
-		System.out.println("link(), team=" + team);
 		GenericEntity<Team> myTeam = 
 			new GenericEntity<Team>(team) {};
 	

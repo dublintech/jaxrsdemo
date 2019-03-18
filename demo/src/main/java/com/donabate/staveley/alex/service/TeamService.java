@@ -6,9 +6,12 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.donabate.staveley.alex.api.endpoints.TeamApi;
 import com.donabate.staveley.alex.api.validation.TeamApiValidator;
 import com.donabate.staveley.alex.pojos.command.DeleteCommand;
 import com.donabate.staveley.alex.pojos.command.LinkCommand;
@@ -32,6 +35,8 @@ import com.donabate.staveley.alex.service.validation.TeamServiceValidator;
 @Component("teamService")
 public class TeamService {
 	
+	private static final Logger LOG = LoggerFactory.getLogger(TeamApi.class);
+	
     @Autowired
     private TeamServiceValidator teamServiceValidator;
     
@@ -45,7 +50,7 @@ public class TeamService {
 	}
 	
 	public Team findTeam(String teamId) {	
-		System.out.println(">>findTeam(teamId=" + teamId + ")");
+		LOG.info(">>findTeam(teamId=" + teamId + ")");
 		return makeLiverpool(teamId);
 	}
 	
@@ -130,13 +135,10 @@ public class TeamService {
 		// make another just so we have a response
 		return makeTeam(id, editTeamCommand.getName());
 	}
-	
-	public void deleteTeam(DeleteCommand deleteCommand) {
-		System.out.println(">>deleteTeamCommand(deleteCommand=" + deleteCommand + ")");
-	}
+
 	
 	public void deleteTeam(String id) {
-		System.out.println(">>deleteTeamCommand(id=" + id + ")");
+		LOG.info(">>deleteTeamCommand(id=" + id + ")");
 	}
 	
 	public Jersey createJersey(String teamId, CreateJerseyCommand createJerseyCommand) {

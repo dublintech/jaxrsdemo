@@ -31,7 +31,9 @@ public class APIError {
 	private String title;
 	
 	/**
-	 * human-readable explanation specific to this occurrence of the problem. Like title, this field’s value can be localized.
+	 * human-readable explanation specific to this 
+	 * occurrence of the problem. Like title, this fields 
+	 * value can be localized.
 	 */
 	private String detail;
 		

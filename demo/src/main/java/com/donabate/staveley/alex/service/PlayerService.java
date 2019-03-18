@@ -13,12 +13,15 @@ import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.donabate.staveley.alex.pojos.player.Player;
 import com.donabate.staveley.alex.pojos.player.PlayerQuery;
 import com.donabate.staveley.alex.pojos.player.WritePlayerCommand;
 import com.donabate.staveley.alex.service.validation.BusinessLogicException;
+import com.donabate.staveley.alex.api.endpoints.PlayerApi;
 import com.donabate.staveley.alex.pojos.command.EditCommand;
 
 import static com.donabate.staveley.alex.service.validation.BusinessLogicException.BusinessErrorCodeEnum;
@@ -27,6 +30,8 @@ import static com.donabate.staveley.alex.service.validation.BusinessLogicExcepti
 @Component("playerService")
 public final class PlayerService {
 	
+	private static final Logger LOG = LoggerFactory.getLogger(PlayerService.class);
+
 	private List<Player> playersInDB = null;
 	
 	
@@ -92,7 +97,7 @@ public final class PlayerService {
 	 * @return
 	 */
 	public Player getPlayer(String playerId) throws BusinessLogicException {	
-		System.out.println(">>getPlayer(playerId=" + playerId + ")");
+		LOG.info(">>getPlayer(playerId=" + playerId + ")");
 		Optional<Player> foundPlayer = 
 				playersInDB.stream().filter(player -> player.getId().equals(playerId)).findFirst();
 		
@@ -105,7 +110,7 @@ public final class PlayerService {
 	}
 	
 	public Player editPlayer(String playerId, EditCommand editCommand) {
-		System.out.println(">>editPlayer(playerId=" + playerId + ",editCommand=" + editCommand);
+		LOG.info(">>editPlayer(playerId=" + playerId + ",editCommand=" + editCommand);
 		// In reality,
 		// (1) the service method would go off and get a Business Entity 
 		// or External represenation of the Player.
@@ -143,7 +148,7 @@ public final class PlayerService {
 	 * @param sortField
 	 */
 	private void sortPlayers(List<Player> players, String sortField) {
-		System.out.println("sortPlayers=(players=" + players + ",sortField=" + sortField);
+		LOG.info("sortPlayers=(players=" + players + ",sortField=" + sortField);
 		if (sortField != null && !sortField.equals("")) {
 			Comparator<Player> comp = new Comparator<Player>(){
 				@Override
@@ -176,7 +181,7 @@ public final class PlayerService {
 		// Step 1 - go off to and get existing player from DB
 		Player player = this.getPlayer(playerId);
 
-		System.out.println(">>replacePlayer(playerId=" + playerId + ", writePlayerCommand=" + 
+		LOG.info(">>replacePlayer(playerId=" + playerId + ", writePlayerCommand=" + 
 				writePlayerCommand + ")");
 		Player.Builder builderPlayer = new Player.Builder();
 		builderPlayer.withName(writePlayerCommand.getName());
@@ -197,7 +202,7 @@ public final class PlayerService {
 	}
 	
 	public Player create(WritePlayerCommand writePlayerCommand) {
-		System.out.println(">>create(writePlayerCommand=" + writePlayerCommand + ")");
+		LOG.info(">>create(writePlayerCommand=" + writePlayerCommand + ")");
 		Player.Builder builderPlayer = new Player.Builder();
 		builderPlayer.withName(writePlayerCommand.getName());
 		builderPlayer.withAge(writePlayerCommand.getAge());

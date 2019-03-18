@@ -19,6 +19,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,6 +46,8 @@ import com.donabate.staveley.alex.pojos.command.EditCommand;
 @Path("/players")
 public class PlayerApi {
 
+	private static final Logger LOG = LoggerFactory.getLogger(PlayerApi.class);
+	
     @Autowired
     private PlayerService playerService;
     
@@ -60,7 +64,7 @@ public class PlayerApi {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
     public Response getSingle(@PathParam("id") String playerId) {
-    	System.out.println(">>getSingle(), id=" + playerId);
+    	LOG.info(">>getSingle(), id=" + playerId);
     	Player player = null;
     	try {
             player = playerService.getPlayer(playerId);
@@ -108,7 +112,7 @@ public class PlayerApi {
     @Produces(MediaType.APPLICATION_JSON)
     public Response query( 
     		@BeanParam @Valid PlayerQuery playerQuery) {
-    	System.out.println(">>query(), query=" + playerQuery);
+    	LOG.info(">>query(), query=" + playerQuery);
     	playerApiValidator.validate(playerQuery);
     	
     	PlayerQueryResponse playerQueryResponse = playerService.findAllPlayers(playerQuery);
@@ -135,7 +139,7 @@ public class PlayerApi {
     }
     
     private PaginationLinks createPaginationLinks(PlayerQuery playerQuery, URL url, int totalQuerySize) {
-    	System.out.println(">>createPaginationLinks(totalQuerySize=" + totalQuerySize);
+    	LOG.info(">>createPaginationLinks(totalQuerySize=" + totalQuerySize);
     	int pageStartIndex = playerQuery.getPageStartIndex();
     	int pageSize = playerQuery.getPageSize();
     	
