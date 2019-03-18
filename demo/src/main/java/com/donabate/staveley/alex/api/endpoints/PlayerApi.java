@@ -3,6 +3,7 @@ package com.donabate.staveley.alex.api.endpoints;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 import javax.ws.rs.BeanParam;
@@ -27,6 +28,7 @@ import com.donabate.staveley.alex.api.validation.TeamApiValidator;
 import com.donabate.staveley.alex.pojos.command.EditCommand;
 import com.donabate.staveley.alex.pojos.player.Player;
 import com.donabate.staveley.alex.pojos.player.PlayerQuery;
+import com.donabate.staveley.alex.pojos.player.WritePlayerCommand;
 import com.donabate.staveley.alex.pojos.resource.LinkHolder;
 import com.donabate.staveley.alex.pojos.resource.PaginationLinks;
 import com.donabate.staveley.alex.pojos.resource.ResourceListWrapper;
@@ -59,7 +61,7 @@ public class PlayerApi {
     @Path("/{id}")
     public Response getSingle(@PathParam("id") String id) {
     	System.out.println(">>getSingle(), id=" + id);
-    	Player player = playerService.findPlayer(id);
+    	Player player = playerService.getPlayer(id);
   
     	GenericEntity<Player> myEntity = 
     			new GenericEntity<Player>(player) {};
@@ -200,4 +202,63 @@ public class PlayerApi {
     	return Response.status(200).header("location", player.getLinks().get(LinkHolder.SELF)).entity(player).build();
     }
     
+    /**
+     * To execute this:
+     *  curl -X POST -v -d "{"""age""":27, """name""", """Tony Magoo"""}" localhost:8080/players/123/replace --header "Content-Type:application/json"
+     * @param id
+     * @param editCommand
+     * @return
+     */
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{id}/replace")
+    public Response replace(@PathParam("id") String id,  
+    		WritePlayerCommand replacePlayerCommand) {
+    	Player player = playerService.replace(id, replacePlayerCommand);
+    	return Response.status(200).header("location", player.getLinks().get(LinkHolder.SELF)).entity(player).build();
+    }
+    
+    /**
+     * To execute this:
+     *  curl -X POST -v -d "{"""age""":27, """name""", """Tony Magoo"""}" localhost:8080/players/store --header "Content-Type:application/json"
+     * @param id
+     * @param editCommand
+     * @return
+     */
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{id}/replace")
+    public Response store(WritePlayerCommand writePlayerCommand) {
+    	// Does the player exist. 
+    	Optional<Player> foundPlayer =  playerService.getPlayerByName(writePlayerCommand.getName());
+    	Player player = null;
+    	int status = 0;
+    	if (foundPlayer.isPresent()) {
+    		player =  playerService.replace(foundPlayer.get().getId(), writePlayerCommand);
+    		status = 200;
+    	} else {
+    		player = playerService.create(writePlayerCommand);
+    		status = 201;
+    	}
+    		
+  
+    	return Response.status(status).header("location", player.getLinks().get(LinkHolder.SELF)).entity(player).build();
+    }
+    
+    /**
+     * To execute this:
+     *  curl -X POST -v -d localhost:8080/players/123/remove --header "Content-Type:application/json"
+     * @param id
+     * @param editCommand
+     * @return
+     */
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{id}/replace")
+    public Response edit(@PathParam("id") String playerId) {
+        playerService.remove(playerId);
+    	return Response.status(204).build();
+    }
 }

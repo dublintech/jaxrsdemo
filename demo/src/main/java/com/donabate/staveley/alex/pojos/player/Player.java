@@ -52,9 +52,15 @@ public class Player implements Resource, Extensible, LinkHolder {
 	
 	public static class Builder  {
 		private String name;
+		private Integer age;
 		
 		public Builder withName(String name) {
 			this.name = name;
+			return this;
+		}
+		
+		public Builder withAge(Integer age) {
+			this.age = age;
 			return this;
 		}
 		

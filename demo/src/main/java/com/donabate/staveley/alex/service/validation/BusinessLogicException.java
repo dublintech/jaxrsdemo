@@ -7,7 +7,15 @@ package com.donabate.staveley.alex.service.validation;
  * @author astaveley
  */
 public class BusinessLogicException extends RuntimeException {
-	public BusinessLogicException(String message) {
+	
+	public static enum BusinessErrorCodeEnum {
+		ENTIT_NOT_IN_DB, INTERNAL_PROCESSING_ERROR
+	}
+	
+	private BusinessErrorCodeEnum businessErrorCodeEnum = null;
+	
+	public BusinessLogicException(String message, BusinessErrorCodeEnum businessErrorCodeEnum) {
 		super(message);
+		this.businessErrorCodeEnum = businessErrorCodeEnum;
 	}
 }

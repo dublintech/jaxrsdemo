@@ -168,7 +168,7 @@ public class TeamService {
 		Team originalTeam = this.findTeam(id);
 		
 		// Now get the players to add. 
-		Player player = playerService.findPlayer(linkCommand.getId());
+		Player player = playerService.getPlayer(linkCommand.getId());
 		
 		Team.Builder builder = new Team.Builder();
 		builder.withName(originalTeam.getName());
@@ -189,7 +189,7 @@ public class TeamService {
 		Team originalTeam = this.findTeam(id);
 		
 		// Now get the players to add. 
-		Player player = playerService.findPlayer(unlinkCommand.getId());
+		Player player = playerService.getPlayer(unlinkCommand.getId());
 		
 		Team.Builder builder = new Team.Builder();
 		builder.withName(originalTeam.getName());

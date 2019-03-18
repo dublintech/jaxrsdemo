@@ -11,9 +11,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * 3. Edit API
  * 3. Parent / child resource, Team / Jersey
  * 4. Request filter, logging paraneters
- * 
- * Next:
- * 1. Show link and unlink APIs
+ * 5. Linking, Unlinking resources. 
+ * 6. Added Links (self and rel links)
+ * 7. Partial edits
+ * 8. Sorting
+ * 9. Pagination
+ *
+ * Questions:
+ * 1. Should there be template interfaces for Service and API classes.
  * 
  * @author astaveley
  *

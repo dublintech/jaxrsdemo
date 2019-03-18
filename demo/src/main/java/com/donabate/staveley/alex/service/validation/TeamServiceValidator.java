@@ -3,6 +3,7 @@ package com.donabate.staveley.alex.service.validation;
 import org.springframework.stereotype.Component;
 
 import com.donabate.staveley.alex.pojos.team.CreateTeamCommand;
+import static com.donabate.staveley.alex.service.validation.BusinessLogicException.BusinessErrorCodeEnum;
 
 /**
  * This is the third error handling pattern.
@@ -20,7 +21,7 @@ public class TeamServiceValidator {
 	public void validate(CreateTeamCommand createTeamCommand) {
 		System.out.println(">>TeamServiceValidator.validate(createTeamCommand=" + createTeamCommand + ")");
 		if (createTeamCommand.getName().equals("422ex")) {
-			throw new BusinessLogicException("You asked for B logic to be thrown");
+			throw new BusinessLogicException("You asked for B logic to be thrown", BusinessErrorCodeEnum.INTERNAL_PROCESSING_ERROR);
 		} else {
 			System.out.println("not throwing ex, when name=" + createTeamCommand.getName());
 		}
