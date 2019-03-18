@@ -1,6 +1,7 @@
 package com.donabate.staveley.alex.service;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -76,10 +77,13 @@ public final class PlayerService {
 		gomezBuilder.withName("Gomez");
 		builderEuan.withAge(24);
 		
-		playersInDB = 
+		// Use add All so it is possible to add and remove from list
+		playersInDB = new ArrayList<>();
+		
+		playersInDB.addAll(
 				Arrays.asList(builderEuan.build("11"), builderOliver.build("12"),
 						vanDijkBuilder.build("13"),
-						gomezBuilder.build("14"));
+						gomezBuilder.build("14")));
 	}
 	
 	/**
@@ -88,9 +92,9 @@ public final class PlayerService {
 	 * @return
 	 */
 	public Player getPlayer(String playerId) throws BusinessLogicException {	
-		System.out.println(">>findPlayer(playerId=" + playerId + ")");
+		System.out.println(">>getPlayer(playerId=" + playerId + ")");
 		Optional<Player> foundPlayer = 
-				playersInDB.stream().filter(player -> player.getId() == playerId).findFirst();
+				playersInDB.stream().filter(player -> player.getId().equals(playerId)).findFirst();
 		
 		if (foundPlayer.isPresent()) {
 			return foundPlayer.get();
@@ -167,27 +171,28 @@ public final class PlayerService {
 		}
 	}
 	
-	public Player replace(String playerId, WritePlayerCommand replacePlayerCommand) {
+	public Player replace(String playerId, WritePlayerCommand writePlayerCommand) {
 		// This just a simulation of a full replace.
 		// Step 1 - go off to and get existing player from DB
 		Player player = this.getPlayer(playerId);
 
-		System.out.println(">>replacePlayer(playerId=" + playerId + ")");
+		System.out.println(">>replacePlayer(playerId=" + playerId + ", writePlayerCommand=" + 
+				writePlayerCommand + ")");
 		Player.Builder builderPlayer = new Player.Builder();
-		builderPlayer.withName(replacePlayerCommand.getName());
-		builderPlayer.withAge(replacePlayerCommand.getAge());
+		builderPlayer.withName(writePlayerCommand.getName());
+		builderPlayer.withAge(writePlayerCommand.getAge());
 		Player newPlayer =  builderPlayer.build(playerId);
 
 		this.playersInDB.remove(player);
-		this.playersInDB.add(player);
+		this.playersInDB.add(newPlayer);
 		
-		return player;	
+		return newPlayer;	
 	}
 	
 	public Optional<Player> getPlayerByName(String name) {
 		Optional<Player> foundPlayer = 
 				playersInDB.stream().filter(player -> 
-					player.getName() == name).findFirst();
+					player.getName().equals(name)).findFirst();
 		return foundPlayer;
 	}
 	
@@ -206,6 +211,7 @@ public final class PlayerService {
 		// reality, delete happens inDB.
 		// Step 1 - go off to and get existing player from DB
 		Player player = this.getPlayer(playerId);
+		System.out.println("Removing player" + player);
 		// Step 2 delete it.
 		// Remove it from players  in DB
 		this.playersInDB.remove(player);

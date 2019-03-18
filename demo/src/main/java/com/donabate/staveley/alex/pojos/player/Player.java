@@ -26,13 +26,13 @@ public class Player implements Resource, Extensible, LinkHolder {
 	}
 
 	private String id;
-	private int age;
+	private Integer age;
 	
-	public int getAge() {
+	public Integer getAge() {
 		return age;
 	}
 
-	public void setAge(int age) {
+	public void setAge(Integer age) {
 		this.age = age;
 	}
 
@@ -67,7 +67,7 @@ public class Player implements Resource, Extensible, LinkHolder {
 		public Player build() {
 			Player player =  new Player();
 			player.name = this.name;
-			
+			player.age = this.age;
 			URL playerSelfLink = PojoService.createUrl("/players/" + player.getId());
 			Map<String, URL> links =  new HashMap<>();
 			links.put(SELF, playerSelfLink);
@@ -78,6 +78,7 @@ public class Player implements Resource, Extensible, LinkHolder {
 		public Player build(String playerId) {
 			Player player =  new Player(playerId);
 			player.name = this.name;
+			player.age = this.age;
 			
 			URL playerSelfLink = PojoService.createUrl("/players/" + player.getId());
 			Map<String, URL> links =  new HashMap<>();

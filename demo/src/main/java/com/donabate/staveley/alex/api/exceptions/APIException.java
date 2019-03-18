@@ -10,6 +10,7 @@ import javax.ws.rs.core.Response;
 import com.donabate.staveley.alex.pojos.error.APIError;
 import com.donabate.staveley.alex.pojos.error.ErrorResponse;
 import com.donabate.staveley.alex.service.validation.BusinessLogicException;
+import static com.donabate.staveley.alex.service.validation.BusinessLogicException.BusinessErrorCodeEnum;
 
 public class APIException extends WebApplicationException  {
 	
@@ -30,10 +31,16 @@ public class APIException extends WebApplicationException  {
 		List<APIError> apiErrors = new ArrayList<>();
 		APIError apiError =  new APIError();
 		apiError.setTitle(message);
-		apiError.setCode("422");
+		Integer errorCode = null;
+		if (ble.getBusinessErrorCodeEnum().equals(BusinessErrorCodeEnum.ENTIT_NOT_IN_DB)) {
+			errorCode = 404;
+		} else {
+			errorCode = 422;
+		}
+		apiError.setCode(errorCode.toString());
 		apiErrors.add(apiError);
 		errorResponse.setAPIErrors(apiErrors);
 		
-		throw new APIException(errorResponse, 422);
+		throw new APIException(errorResponse, errorCode);
     }
 }

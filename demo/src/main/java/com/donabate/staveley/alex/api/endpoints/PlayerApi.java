@@ -59,10 +59,15 @@ public class PlayerApi {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
-    public Response getSingle(@PathParam("id") String id) {
-    	System.out.println(">>getSingle(), id=" + id);
-    	Player player = playerService.getPlayer(id);
-  
+    public Response getSingle(@PathParam("id") String playerId) {
+    	System.out.println(">>getSingle(), id=" + playerId);
+    	Player player = null;
+    	try {
+            player = playerService.getPlayer(playerId);
+    	}  catch (BusinessLogicException ble) {
+    		APIException.throwApiException(ble);
+    	}
+    
     	GenericEntity<Player> myEntity = 
     			new GenericEntity<Player>(player) {};
     	return Response.status(200).entity(myEntity).build();
@@ -181,7 +186,7 @@ public class PlayerApi {
     
     /**
      * To execute this:
-     *  curl -X POST -v -d "{"""age""":27}" localhost:8080/players/123/edit --header "Content-Type:application/json"
+     *  curl -X POST -v -d "{"""age""":27}" localhost:8080/players/13/edit --header "Content-Type:application/json"
      * @param id
      * @param editCommand
      * @return
@@ -204,7 +209,8 @@ public class PlayerApi {
     
     /**
      * To execute this:
-     *  curl -X POST -v -d "{"""age""":27, """name""", """Tony Magoo"""}" localhost:8080/players/123/replace --header "Content-Type:application/json"
+     * curl -X POST -v -d "{"""age""":27, """name""":"""tony"""}" localhost:8080/players/13/replace --header "Content-Type:application/json"
+     * 
      * @param id
      * @param editCommand
      * @return
@@ -214,7 +220,7 @@ public class PlayerApi {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}/replace")
     public Response replace(@PathParam("id") String id,  
-    		WritePlayerCommand replacePlayerCommand) {
+    		@Valid WritePlayerCommand replacePlayerCommand) {
     	Player player = playerService.replace(id, replacePlayerCommand);
     	return Response.status(200).header("location", player.getLinks().get(LinkHolder.SELF)).entity(player).build();
     }
@@ -229,7 +235,7 @@ public class PlayerApi {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/{id}/replace")
+    @Path("/store")
     public Response store(WritePlayerCommand writePlayerCommand) {
     	// Does the player exist. 
     	Optional<Player> foundPlayer =  playerService.getPlayerByName(writePlayerCommand.getName());
@@ -249,16 +255,20 @@ public class PlayerApi {
     
     /**
      * To execute this:
-     *  curl -X POST -v -d localhost:8080/players/123/remove --header "Content-Type:application/json"
+     *  curl -X POST -v localhost:8080/players/11/remove
      * @param id
      * @param editCommand
      * @return
      */
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{id}/replace")
-    public Response edit(@PathParam("id") String playerId) {
-        playerService.remove(playerId);
+    @Path("/{id}/remove")
+    public Response remove(@PathParam("id") String playerId) {
+    	try {
+            playerService.remove(playerId);
+    	}  catch (BusinessLogicException ble) {
+    		APIException.throwApiException(ble);
+    	}
+    	
     	return Response.status(204).build();
     }
 }

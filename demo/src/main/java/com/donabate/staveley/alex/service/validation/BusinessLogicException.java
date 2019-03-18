@@ -18,4 +18,8 @@ public class BusinessLogicException extends RuntimeException {
 		super(message);
 		this.businessErrorCodeEnum = businessErrorCodeEnum;
 	}
+	
+	public BusinessErrorCodeEnum getBusinessErrorCodeEnum() {
+		return businessErrorCodeEnum;
+	}
 }
