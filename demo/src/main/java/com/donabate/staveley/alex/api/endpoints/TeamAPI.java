@@ -206,11 +206,10 @@ public class TeamApi {
     	teamApiValidator.validate(unlinkCommand);
     	// For now we are only linking players.
  
-		Team team = teamService.removePlayerFromTeam(id, unlinkCommand);
-		GenericEntity<Team> myTeam = 
-			new GenericEntity<Team>(team) {};
-	
-		return Response.status(200).header("location", team.getLinks().get(LinkHolder.SELF)).entity(myTeam).build();
+    	Team team = teamService.removePlayerFromTeam(id, unlinkCommand);
+    	GenericEntity<Team> myTeam = new GenericEntity<Team>(team) {};
+
+    	return Response.status(200).header("location", team.getLinks().get(LinkHolder.SELF)).entity(myTeam).build();
     }
     
     
