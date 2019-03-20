@@ -14,6 +14,8 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +33,8 @@ import com.donabate.staveley.alex.service.TeamService;
 @Path("/teams/{teamId}/jerseys")
 public class JerseyApi {
 	
+    private static final Logger LOG = LoggerFactory.getLogger(JerseyApi.class);
+    
     // ToDo consider if it s better the API invoked this or if the teamService does. 
     @Autowired
     private TeamService teamService;
@@ -46,7 +50,7 @@ public class JerseyApi {
     @Path("/{jerseyId}")
     public Response getSingle(@PathParam("teamId") String teamId, 
     		@PathParam("jerseyId") String jerseyId) {
-    	System.out.println(">>getSingle(), teamId=" + teamId + ",jerseyId=" + jerseyId);
+    	LOG.info(">>getSingle(), teamId=" + teamId + ",jerseyId=" + jerseyId);
     	
     	Jersey jersey = teamService.findJersey(teamId, jerseyId);
   
@@ -69,7 +73,7 @@ public class JerseyApi {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createJersey(@PathParam("teamId") String teamId, @Valid CreateJerseyCommand createJerseyCommand) {
-    	System.out.println(">>createJersey(createJerseyCommand=" + createJerseyCommand + ")");
+        LOG.info(">>createJersey(createJerseyCommand=" + createJerseyCommand + ")");
     	Jersey jersey = teamService.createJersey(teamId, createJerseyCommand);
     	GenericEntity<Jersey> myTeam = 
     			new GenericEntity<Jersey>(jersey) {};

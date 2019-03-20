@@ -5,9 +5,12 @@ import java.util.List;
 
 import javax.ws.rs.core.Response;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.donabate.staveley.alex.api.endpoints.JerseyApi;
 import com.donabate.staveley.alex.api.exceptions.APIException;
 import com.donabate.staveley.alex.pojos.command.LinkCommand;
 import com.donabate.staveley.alex.pojos.command.UnlinkCommand;
@@ -33,8 +36,11 @@ import com.donabate.staveley.alex.service.TeamService;
 @Component("teamValidationService")
 public class TeamApiValidator {
 	
+    private static final Logger LOG = 
+            LoggerFactory.getLogger(TeamApiValidator.class);
+    
 	public void validate(CreateTeamCommand createTeamCommand) throws APIException {
-		System.out.println(">>validate(createTeamCommand.name=" + createTeamCommand.getName());
+	    LOG.info(">>validate(createTeamCommand.name=" + createTeamCommand.getName());
 		ErrorResponse errorResponse = new ErrorResponse();
 		List<APIError> apiErrors = new ArrayList<>();
 		
@@ -53,7 +59,7 @@ public class TeamApiValidator {
 	
 
 	public void validate(LinkCommand linkCommand) throws APIException {
-		System.out.println(">>validate(linkCommand=" + linkCommand);
+	    LOG.info(">>validate(linkCommand=" + linkCommand);
 		ErrorResponse errorResponse = new ErrorResponse();
 		List<APIError> apiErrors = new ArrayList<>();
 		
@@ -71,7 +77,7 @@ public class TeamApiValidator {
 	}
 	
 	public void validate(UnlinkCommand unlinkCommand) throws APIException {
-		System.out.println(">>validate(linkCommand=" + unlinkCommand);
+	    LOG.info(">>validate(linkCommand=" + unlinkCommand);
 		ErrorResponse errorResponse = new ErrorResponse();
 		List<APIError> apiErrors = new ArrayList<>();
 		

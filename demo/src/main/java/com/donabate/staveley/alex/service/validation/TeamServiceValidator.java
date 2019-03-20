@@ -1,7 +1,10 @@
 package com.donabate.staveley.alex.service.validation;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import com.donabate.staveley.alex.api.endpoints.TeamApi;
 import com.donabate.staveley.alex.pojos.team.CreateTeamCommand;
 import static com.donabate.staveley.alex.service.validation.BusinessLogicException.BusinessErrorCodeEnum;
 
@@ -17,13 +20,15 @@ import static com.donabate.staveley.alex.service.validation.BusinessLogicExcepti
  */
 @Component("teamServiceValidator")
 public class TeamServiceValidator {
-	// In real world command not be parameter here but an actual business entity
+    private static final Logger LOG = LoggerFactory.getLogger(TeamServiceValidator.class);
+    
+    // In real world command not be parameter here but an actual business entity
 	public void validate(CreateTeamCommand createTeamCommand) {
-		System.out.println(">>TeamServiceValidator.validate(createTeamCommand=" + createTeamCommand + ")");
+	    LOG.info(">>TeamServiceValidator.validate(createTeamCommand=" + createTeamCommand + ")");
 		if (createTeamCommand.getName().equals("422ex")) {
 			throw new BusinessLogicException("You asked for B logic to be thrown", BusinessErrorCodeEnum.INTERNAL_PROCESSING_ERROR);
 		} else {
-			System.out.println("not throwing ex, when name=" + createTeamCommand.getName());
+		    LOG.info("not throwing ex, when name=" + createTeamCommand.getName());
 		}
 	}
 }

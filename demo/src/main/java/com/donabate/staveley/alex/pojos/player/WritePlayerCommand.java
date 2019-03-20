@@ -2,6 +2,9 @@ package com.donabate.staveley.alex.pojos.player;
 
 import javax.validation.constraints.NotNull;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** Write Player command can be used for
  * <UL>
  * <LI> Creating a player
@@ -13,6 +16,9 @@ import javax.validation.constraints.NotNull;
  *
  */
 public class WritePlayerCommand {
+    private static final Logger LOG = 
+            LoggerFactory.getLogger(WritePlayerCommand.class);
+    
 	@NotNull
     private String name;
 	
@@ -24,7 +30,7 @@ public class WritePlayerCommand {
     }
 
     public void setName(String name) {
-    	System.out.println (">>CreateTeamCommand.setName()");
+        LOG.info(">>CreateTeamCommand.setName()");
         this.name = name;
     }
 

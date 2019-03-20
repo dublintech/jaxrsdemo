@@ -5,11 +5,17 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.donabate.staveley.alex.api.endpoints.JerseyApi;
 import com.donabate.staveley.alex.pojos.query.PageableQuery;
 import com.donabate.staveley.alex.pojos.query.Query;
 import com.donabate.staveley.alex.pojos.query.SortableQuery;
 
 public class PlayerQuery implements Query, SortableQuery, PageableQuery {
+    private static final Logger LOG = LoggerFactory.getLogger(PlayerQuery.class);
+    
     @Override
 	public String toString() {
 		return "PlayerQuery [name=" + name + ", age=" + age + ", sort=" + sort + ", pageStartIndex=" + pageStartIndex
@@ -85,7 +91,7 @@ public class PlayerQuery implements Query, SortableQuery, PageableQuery {
 	
 	public void setPageStartIndex(int pageStartIndex) {
 		// TODO Auto-generated method stub
-		System.out.println(">>setPageStartIndex=" + pageStartIndex);
+	    LOG.info(">>setPageStartIndex=" + pageStartIndex);
 		this.pageStartIndex = pageStartIndex;
 	}
 	

@@ -9,17 +9,17 @@ package com.donabate.staveley.alex.service.validation;
 public class BusinessLogicException extends RuntimeException {
 	
 	public static enum BusinessErrorCodeEnum {
-		ENTIT_NOT_IN_DB, INTERNAL_PROCESSING_ERROR
+	    ENTIT_NOT_IN_DB, INTERNAL_PROCESSING_ERROR
 	}
 	
 	private BusinessErrorCodeEnum businessErrorCodeEnum = null;
 	
 	public BusinessLogicException(String message, BusinessErrorCodeEnum businessErrorCodeEnum) {
-		super(message);
+	    super(message);
 		this.businessErrorCodeEnum = businessErrorCodeEnum;
 	}
 	
 	public BusinessErrorCodeEnum getBusinessErrorCodeEnum() {
-		return businessErrorCodeEnum;
+	    return businessErrorCodeEnum;
 	}
 }
