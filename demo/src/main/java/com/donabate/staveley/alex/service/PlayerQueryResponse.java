@@ -16,18 +16,15 @@ public class PlayerQueryResponse {
 	
 	public PlayerQueryResponse(List<Player> players, Integer totalSize) {
 		// TODO Auto-generated constructor stub
-		this.players = players;
-		this.totalSize = totalSize;
-		
+	    this.players = players;
+	    this.totalSize = totalSize;
 	}
 
 	public List<Player> getPlayers() {
-		return players;
+	    return players;
 	}
 
 	public Integer getTotalSize() {
-		return totalSize;
+	    return totalSize;
 	}
-
-
 }

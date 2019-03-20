@@ -26,21 +26,20 @@ public class APIException extends WebApplicationException  {
     
     public static void throwApiException(BusinessLogicException ble) throws APIException {
     	String message = ble.getMessage();
-    	
-		ErrorResponse errorResponse = new ErrorResponse();
-		List<APIError> apiErrors = new ArrayList<>();
-		APIError apiError =  new APIError();
-		apiError.setTitle(message);
-		Integer errorCode = null;
-		if (ble.getBusinessErrorCodeEnum().equals(BusinessErrorCodeEnum.ENTIT_NOT_IN_DB)) {
-			errorCode = 404;
-		} else {
-			errorCode = 422;
-		}
-		apiError.setCode(errorCode.toString());
-		apiErrors.add(apiError);
-		errorResponse.setAPIErrors(apiErrors);
-		
-		throw new APIException(errorResponse, errorCode);
+    	ErrorResponse errorResponse = new ErrorResponse();
+    	List<APIError> apiErrors = new ArrayList<>();
+    	APIError apiError =  new APIError();
+        apiError.setTitle(message);
+        Integer errorCode = null;
+        if (ble.getBusinessErrorCodeEnum().equals(BusinessErrorCodeEnum.ENTIT_NOT_IN_DB)) {
+        	errorCode = 404;
+        } else {
+        	errorCode = 422;
+        }
+        apiError.setCode(errorCode.toString());
+        apiErrors.add(apiError);
+        errorResponse.setAPIErrors(apiErrors);
+        
+        throw new APIException(errorResponse, errorCode);
     }
 }

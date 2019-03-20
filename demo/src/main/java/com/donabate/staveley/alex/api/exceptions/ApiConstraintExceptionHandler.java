@@ -55,7 +55,7 @@ public class ApiConstraintExceptionHandler implements ExceptionMapper<Constraint
         StringBuilder message = new StringBuilder();
 
     	for (ConstraintViolation<?> cv : exception.getConstraintViolations()) {
-        	message.append(cv.getPropertyPath() + " " + cv.getMessage() + "\n");
+    	    message.append(cv.getPropertyPath() + " " + cv.getMessage() + "\n");
     	}
         
         return message.toString();

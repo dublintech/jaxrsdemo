@@ -92,11 +92,11 @@ public class TeamApi {
     	List<Team> teams = teamService.findTeams(teamQuery);
     	URL url = null;
     	try {
-    		url = teamQuery.getUriInfo().getRequestUri().toURL();
+    	    url = teamQuery.getUriInfo().getRequestUri().toURL();
     	}  catch (MalformedURLException me) {
-    		// very unlikely to happen.
-    		// so swallow, for prototype
-    		me.printStackTrace();
+    	    // very unlikely to happen.
+    	    // so swallow, for prototype
+    	    me.printStackTrace();
     	}
     	
     	ResourceListWrapper<Team> resourceListWrapper = new ResourceListWrapper<Team>(teams, url);
@@ -131,12 +131,11 @@ public class TeamApi {
     	teamApiValidator.validate(createTeamCommand);
     	Team team = null;
     	try {
-    		team = teamService.createTeam(createTeamCommand);
+    	    team = teamService.createTeam(createTeamCommand);
     	}  catch (BusinessLogicException ble) {
-    		APIException.throwApiException(ble);
+    	    APIException.throwApiException(ble);
     	}
-		GenericEntity<Team> myTeam = 
-				new GenericEntity<Team>(team) {};
+		GenericEntity<Team> myTeam = new GenericEntity<Team>(team) {};
     	return Response.status(201).header("location", team.getLinks().get(LinkHolder.SELF)).entity(myTeam).build();
     	
     }
@@ -164,11 +163,10 @@ public class TeamApi {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}/edit")
     public Response editTeam(@PathParam("id") String id, @Valid EditTeamCommand editTeamCommand) {
-    	Team team = teamService.editTeam(id, editTeamCommand);
-    	LOG.info("editTeam(), team=" + team);
-    	GenericEntity<Team> myTeam = 
-    			new GenericEntity<Team>(team) {};
-    	return Response.status(200).header("location", team.getLinks().get(LinkHolder.SELF)).entity(myTeam).build();
+        Team team = teamService.editTeam(id, editTeamCommand);
+        LOG.info("editTeam(), team=" + team);
+        GenericEntity<Team> myTeam = new GenericEntity<Team>(team) {};
+        return Response.status(200).header("location", team.getLinks().get(LinkHolder.SELF)).entity(myTeam).build();
     }
     
     /*

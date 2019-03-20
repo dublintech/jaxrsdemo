@@ -59,22 +59,22 @@ public class Jersey implements Resource, LinkHolder {
 	}
 	
 	public static class Builder  {
-		private String type;
-		private String colour;
+	    private String type;
+	    private String colour;
 		
 		
 		public Builder withColour(String colour) {
-			this.colour = colour;
+		    this.colour = colour;
 			return this;
 		}
 		
 		public Builder withType(String type) {
-			this.type = type;
+		    this.type = type;
 			return this;
 		}
 		
 		public Jersey build(String teamId) {
-			Jersey jersey =  new Jersey(teamId);
+		    Jersey jersey =  new Jersey(teamId);
 			jersey.type = this.type;
 			jersey.colour = this.colour;
 			

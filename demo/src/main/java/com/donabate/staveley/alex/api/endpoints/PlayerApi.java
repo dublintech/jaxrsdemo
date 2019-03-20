@@ -268,9 +268,9 @@ public class PlayerApi {
     @Path("/{id}/remove")
     public Response remove(@PathParam("id") String playerId) {
     	try {
-            playerService.remove(playerId);
-    	}  catch (BusinessLogicException ble) {
-    		APIException.throwApiException(ble);
+    	    playerService.remove(playerId);
+        } catch (BusinessLogicException ble) {
+    	    APIException.throwApiException(ble);
     	}
     	
     	return Response.status(204).build();
