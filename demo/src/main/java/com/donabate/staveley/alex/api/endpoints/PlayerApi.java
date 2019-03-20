@@ -64,16 +64,16 @@ public class PlayerApi {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
     public Response getSingle(@PathParam("id") String playerId) {
-    	LOG.info(">>getSingle(), id=" + playerId);
-    	Player player = null;
+        LOG.info(">>getSingle(), id=" + playerId);
+        Player player = null;
     	try {
-            player = playerService.getPlayer(playerId);
+    	    player = playerService.getPlayer(playerId);
     	}  catch (BusinessLogicException ble) {
-    		APIException.throwApiException(ble);
+    	    APIException.throwApiException(ble);
     	}
     
     	GenericEntity<Player> myEntity = 
-    			new GenericEntity<Player>(player) {};
+    	            new GenericEntity<Player>(player) {};
     	return Response.status(200).entity(myEntity).build();
     }
     
@@ -112,7 +112,7 @@ public class PlayerApi {
     @Produces(MediaType.APPLICATION_JSON)
     public Response query( 
     		@BeanParam @Valid PlayerQuery playerQuery) {
-    	LOG.info(">>query(), query=" + playerQuery);
+        LOG.info(">>query(), query=" + playerQuery);
     	playerApiValidator.validate(playerQuery);
     	
     	PlayerQueryResponse playerQueryResponse = playerService.findAllPlayers(playerQuery);
