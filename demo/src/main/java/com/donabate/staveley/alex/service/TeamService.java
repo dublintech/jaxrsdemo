@@ -100,8 +100,8 @@ public class TeamService {
 		
 	    Player.Builder builderPlayer = new Player.Builder();
 	    builderPlayer.withName("Jonny Magoo");
-		builderTeam.withPlayers(Arrays.asList(builderPlayer.build("000")));
-		return builderTeam.build(teamId);
+	    builderTeam.withPlayers(Arrays.asList(builderPlayer.build("000")));
+	    return builderTeam.build(teamId);
 	}
 	
 	public List<Team> findTeams(TeamQuery teamQuery) {
@@ -144,19 +144,19 @@ public class TeamService {
 	}
 	
 	public void deleteJersey(DeleteCommand deleteCommand) {
-	    System.out.println(">>deleteJersey(deleteCommand=" + deleteCommand + ")");
+	    LOG.info(">>deleteJersey(deleteCommand=" + deleteCommand + ")");
 	}
 	
 	
 	public void deleteJersey(String id) {
-	    System.out.println(">>deleteJersey(id=" + id + ")");
+	    LOG.info(">>deleteJersey(id=" + id + ")");
 	}
 	
 	public Jersey findJersey(String teamId, String jerseyId) {
 	    Jersey.Builder jerseyDublin = new Jersey.Builder();
 	    jerseyDublin.withType("Home");
 	    jerseyDublin.withColour("Blue");
-		return jerseyDublin.build(teamId);
+	    return jerseyDublin.build(teamId);
 	}
 
 	public Team addPlayerToTeam(String id, @Valid LinkCommand linkCommand) {
@@ -176,8 +176,7 @@ public class TeamService {
 	    builder.withPlayers(newPlayers);
 		
 	    Team team = builder.build(id);
-		
-	    return team;
+		return team;
 	}
 	
 	public Team removePlayerFromTeam(String id, @Valid UnlinkCommand unlinkCommand) {
@@ -186,7 +185,7 @@ public class TeamService {
 		
 	    // Now get the players to add. 
 	    Player player = playerService.getPlayer(unlinkCommand.getId());
-		Team.Builder builder = new Team.Builder();
+	    Team.Builder builder = new Team.Builder();
 		builder.withName(originalTeam.getName());
 		builder.withFanBase(originalTeam.getFanBase());
 		
@@ -197,8 +196,4 @@ public class TeamService {
 		Team team = builder.build(id);
 		return team;
 	}
-	
-	
-	
-
 }
